@@ -1,89 +1,38 @@
-
 <template>
   <div class="flex min-h-screen">
     
-    <aside class="professor-sidebar">
-      <div class="sidebar-header">
-        <div class="profile-image-container">
-          <i class="fas fa-user-tie profile-icon"></i>
-          <span class="profile-badge">P</span>
-        </div>
-        <h3 class="profile-name">Prof. Maria Santos</h3>
-        <p class="profile-edit">editar perfil</p>
-                <router-link
-                    to="/"
-                    class="logout-link">
-            <i class="fas fa-sign-out-alt"></i>
-                            Sair
-                    </router-link>
-
-        <div class="account-info">
-          <p class="account-type">CONTA PROFESSOR</p>
-        </div>
-      </div>
-
-      <nav class="sidebar-nav">
-        <a href="#" class="nav-item active">
-          <i class="fas fa-th-large"></i>
-          <span>Painel Geral</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="fas fa-users"></i>
-          <span>Meus Alunos</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="fas fa-clipboard-list"></i>
-          <span>Inscrições</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="fas fa-certificate"></i>
-          <span>Certificados</span>
-        </a>
-       <router-link
-        to="/professor/correcoes"
-        class="nav-item">
-        <i class="fas fa-check-circle"></i>
-        <span>Correções</span>
-        </router-link>
-
-
-
-        <div class="nav-divider">
-          <p class="nav-category">OUTRAS OPÇÕES</p>
-          <a href="#" class="nav-item">
-            <i class="fas fa-chart-bar"></i>
-            <span>Relatórios</span>
-          </a>
-          <a href="#" class="nav-item">
-            <i class="fas fa-cog"></i>
-            <span>Configurações</span>
-          </a>
-        </div>
-      </nav>
-    </aside>
+    <Sidebar
+      :userName="professor.nome"
+      badge="P"
+      :accountType="`CONTA ${professor.conta}`"
+      :menuItems="menuItems"
+      :otherOptions="otherOptions"
+      userType="professor"
+      @edit-profile="editarPerfil"
+    />
 
     
     <main class="main-content">
       <div class="content-wrapper">
-        
+       
         <div class="main-header">
           <div class="header-left">
             <h1 class="main-title">Painel do Professor</h1>
-            <p class="main-subtitle">Olá, <strong>Prof. Maria Santos</strong>. Gerencie seus alunos e modalidades</p>
+            <p class="main-subtitle">Olá, <strong>{{ professor.nome }}</strong>. Gerencie seus alunos e modalidades</p>
           </div>
-          <button class="btn-primary">
+          <button class="btn-primary" @click="inscreverAlunos">
             <i class="fas fa-user-plus"></i>
             Inscrever Alunos
           </button>
         </div>
 
-        
+       
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-content">
               <div>
                 <p class="stat-label">Total de Alunos</p>
-                <p class="stat-value">156</p>
+                <p class="stat-value">{{ estatisticas.totalAlunos }}</p>
               </div>
               <div class="stat-icon blue">
                 <i class="fas fa-users"></i>
@@ -95,7 +44,7 @@
             <div class="stat-content">
               <div>
                 <p class="stat-label">Modalidades</p>
-                <p class="stat-value">5</p>
+                <p class="stat-value">{{ estatisticas.modalidades }}</p>
               </div>
               <div class="stat-icon purple">
                 <i class="fas fa-trophy"></i>
@@ -107,7 +56,7 @@
             <div class="stat-content">
               <div>
                 <p class="stat-label">Inscrições Ativas</p>
-                <p class="stat-value">243</p>
+                <p class="stat-value">{{ estatisticas.inscricoesAtivas }}</p>
               </div>
               <div class="stat-icon green">
                 <i class="fas fa-clipboard-check"></i>
@@ -119,7 +68,7 @@
             <div class="stat-content">
               <div>
                 <p class="stat-label">Certificados</p>
-                <p class="stat-value">187</p>
+                <p class="stat-value">{{ estatisticas.certificados }}</p>
               </div>
               <div class="stat-icon yellow">
                 <i class="fas fa-certificate"></i>
@@ -128,21 +77,24 @@
           </div>
         </div>
 
-        
+       
         <div class="search-container">
           <h2 class="search-title">Buscar Aluno</h2>
           <div class="search-form">
-            <div class="search-input-container">
-              <i class="fas fa-search search-icon"></i>
-              <input 
-                type="text" 
-                placeholder="Digite o nome, matrícula ou email do aluno..."
-                class="search-input"
-              >
+            <div class="search-input-wrapper">
+              <div class="search-input-container">
+                <i class="fas fa-search search-icon"></i>
+                <input 
+                  type="text" 
+                  placeholder="Digite o nome, matrícula ou email do aluno..."
+                  class="search-input"
+                  v-model="searchQuery"
+                >
+              </div>
+              <button class="search-button" @click="buscarAluno">
+                Buscar
+              </button>
             </div>
-            <button class="search-button">
-              Buscar
-            </button>
           </div>
         </div>
 
@@ -254,7 +206,7 @@
               </div>
             </div>
 
-            
+          
             <div class="modalidade-item">
               <div class="modalidade-content">
                 <div class="modalidade-header">
@@ -375,7 +327,7 @@
                 </div>
 
                 <div class="modalidade-actions">
-                  <button class="btn-orange">
+                  <button class="btn-orange" @click="iniciarCorrecao">
                     <i class="fas fa-check-circle"></i>
                     Iniciar Correção
                   </button>
@@ -394,8 +346,13 @@
 </template>
 
 <script>
+import Sidebar from '../components/Sidebar.vue';
+
 export default {
   name: 'ProfessorHome',
+  components: {
+    Sidebar
+  },
   data() {
     return {
       professor: {
@@ -407,24 +364,38 @@ export default {
         modalidades: 5,
         inscricoesAtivas: 243,
         certificados: 187
-      }
+      },
+      searchQuery: '',
+      menuItems: [
+        { label: 'Painel Geral', icon: 'fas fa-th-large', path: '/professor', active: true },
+        { label: 'Meus Alunos', icon: 'fas fa-users', path: '/professor/alunos' },
+        { label: 'Inscrições', icon: 'fas fa-clipboard-list', path: '/professor/inscricoes' },
+        { label: 'Certificados', icon: 'fas fa-certificate', path: '/professor/certificados' },
+        { label: 'Correções', icon: 'fas fa-check-circle', path: '/professor/correcoes' }
+      ],
+      otherOptions: [
+        { label: 'Relatórios', icon: 'fas fa-chart-bar', path: '/professor/relatorios' },
+        { label: 'Configurações', icon: 'fas fa-cog', path: '/professor/configuracoes' }
+      ]
     };
   },
   methods: {
     buscarAluno() {
-     
+      console.log('Buscando aluno:', this.searchQuery);
     },
     inscreverAlunos() {
-      
+      console.log('Inscrevendo alunos');
+    },
+    editarPerfil() {
+      console.log('Editando perfil');
     },
     iniciarCorrecao() {
-    
+      console.log('Iniciando correção');
     }
   }
 };
 </script>
 
 <style scoped>
-
 @import '../assets/ProfessorHome.css';
 </style>

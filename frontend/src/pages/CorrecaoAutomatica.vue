@@ -1,40 +1,20 @@
 <template>
   <div class="flex min-h-screen">
    
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="profile-image-container">
-          <i class="fas fa-user-tie profile-icon"></i>
-          <span class="profile-badge">P</span>
-        </div>
-        <h3 class="profile-name">Prof. Maria Santos</h3>
-        <p class="profile-edit">editar perfil</p>
-      </div>
+    <Sidebar
+      userName="Prof. Maria Santos"
+      badge="P"
+      accountType="CONTA PROFESSOR"
+      :menuItems="menuItems"
+      :otherOptions="[]"
+      userType="professor"
+      @edit-profile="editarPerfil"
+    />
 
-      <nav class="sidebar-nav">
-        <router-link
-  to="/professor"
-  class="nav-item"
->
-  <i class="fas fa-th-large"></i>
-  <span>Painel Geral</span>
-</router-link>
 
-        <a href="#" class="nav-item">
-          <i class="fas fa-users"></i>
-          <span>Meus Alunos</span>
-        </a>
-        <a href="#" class="nav-item active">
-          <i class="fas fa-check-circle"></i>
-          <span>Correções</span>
-        </a>
-      </nav>
-    </aside>
-
-    
     <main class="main-content">
       <div class="content-wrapper">
-       
+    
         <div class="header-section">
           <div class="header-content">
             <button class="back-button" @click="goBack">
@@ -47,7 +27,7 @@
           </div>
         </div>
 
-       
+      
         <div class="progress-container">
           <div class="progress-header">
             <span class="progress-text" id="progressText">{{ progressText }}</span>
@@ -58,7 +38,7 @@
           </div>
         </div>
 
-       
+      
         <div v-if="currentView === 'upload'" class="upload-container">
           <div class="upload-content">
             <div class="upload-icon">
@@ -100,7 +80,7 @@
           </div>
         </div>
 
-        
+       
         <div v-if="currentView === 'processing'" class="processing-container">
           <div class="processing-content">
             <div class="processing-icon">
@@ -126,7 +106,7 @@
           </div>
         </div>
 
-       
+        
         <div v-if="currentView === 'correction'" class="correction-container">
           <div class="student-card">
             <div class="student-header">
@@ -186,6 +166,14 @@
               </div>
 
               <div class="correction-actions">
+                <button 
+                  @click="previousStudent" 
+                  class="action-button back"
+                  :disabled="currentStudentIndex === 0"
+                >
+                  <i class="fas fa-arrow-left"></i>
+                  Anterior
+                </button>
                 <button @click="skipStudent" class="action-button skip">
                   <i class="fas fa-forward"></i>
                   Pular Aluno
@@ -199,7 +187,7 @@
           </div>
         </div>
 
-       
+      
         <div v-if="currentView === 'summary'" class="summary-container">
           <div class="summary-content">
             <div class="summary-icon">
@@ -261,8 +249,13 @@
 </template>
 
 <script>
+import Sidebar from '../components/Sidebar.vue';
+
 export default {
   name: 'CorrecaoAutomatica',
+  components: {
+    Sidebar
+  },
   data() {
     return {
       currentView: 'upload',
@@ -276,7 +269,12 @@ export default {
       correctAnswers: ['A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B'],
       currentStudentIndex: 0,
       processedStudents: [],
-      progressPercent: 0
+      progressPercent: 0,
+      menuItems: [
+        { label: 'Painel Geral', icon: 'fas fa-th-large', path: '/professor' },
+        { label: 'Meus Alunos', icon: 'fas fa-users', path: '/professor/alunos' },
+        { label: 'Correções', icon: 'fas fa-check-circle', path: '/professor/correcoes', active: true }
+      ]
     };
   },
   computed: {
@@ -299,8 +297,11 @@ export default {
   },
   methods: {
     goBack() {
-      
-      console.log('Going back...');
+      this.$router.push('/professor');
+    },
+    
+    editarPerfil() {
+      console.log('Editando perfil');
     },
     
     handleFileUpload(event) {
@@ -318,7 +319,7 @@ export default {
     initializeCorrection() {
       this.updateProgressBar();
       if (this.currentStudentIndex < this.mockStudents.length) {
-        
+        // Student ready for correction
       } else {
         this.showCompletionSummary();
       }
@@ -347,7 +348,6 @@ export default {
     
     changeAnswer(questionIndex, newAnswer) {
       this.mockStudents[this.currentStudentIndex].answers[questionIndex] = newAnswer;
-      
       this.mockStudents = [...this.mockStudents];
     },
     
@@ -365,9 +365,22 @@ export default {
       this.updateProgressBar();
 
       if (this.currentStudentIndex < this.mockStudents.length) {
-       
+        // Continue to next student
       } else {
         this.showCompletionSummary();
+      }
+    },
+    
+    previousStudent() {
+      if (this.currentStudentIndex > 0) {
+        this.currentStudentIndex--;
+        this.updateProgressBar();
+        
+        // Remove o último aluno processado se ele foi confirmado
+        if (this.processedStudents.length > 0 && 
+            this.processedStudents[this.processedStudents.length - 1].id === this.mockStudents[this.currentStudentIndex].id) {
+          this.processedStudents.pop();
+        }
       }
     },
     
@@ -389,13 +402,11 @@ export default {
     },
     
     startNewCorrection() {
-    
       this.currentView = 'upload';
       this.currentStudentIndex = 0;
       this.processedStudents = [];
       this.progressPercent = 0;
       
-     
       this.mockStudents = [
         { id: 1, name: 'Ana Silva', answers: ['A', 'B', 'C', 'D', 'A', 'B', 'C', 'D', 'A', 'B'], status: 'pending' },
         { id: 2, name: 'Bruno Costa', answers: ['B', 'B', 'C', 'A', 'A', 'B', 'D', 'D', 'A', 'C'], status: 'pending' },
@@ -407,18 +418,15 @@ export default {
     
     exportResults() {
       console.log('Exporting results...');
-     
     },
     
     goToDashboard() {
-      console.log('Going to dashboard...');
-      
+      this.$router.push('/professor');
     }
   }
 };
 </script>
 
 <style scoped>
-
 @import '../assets/CorrecaoAutomatica.css';
 </style>

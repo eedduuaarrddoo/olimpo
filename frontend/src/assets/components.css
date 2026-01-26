@@ -72,3 +72,142 @@
   background-color: #0369a1;
 }
 /* ##################################topbar################################# */
+
+/* Sidebar Base */
+.sidebar,
+.professor-sidebar {
+  width: 16rem;
+  background-color: white;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.profile-image-container {
+  width: 5rem;
+  height: 5rem;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  position: relative;
+}
+
+.profile-icon {
+  font-size: 1.875rem;
+  color: #9ca3af;
+}
+
+.profile-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: #f97316;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.profile-name {
+  text-align: center;
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 1rem;
+}
+
+.profile-edit {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #f97316;
+  cursor: pointer;
+  margin-top: 0.25rem;
+}
+
+.profile-edit:hover {
+  text-decoration: underline;
+}
+
+.logout-link {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: #e53935;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.logout-link:hover {
+  color: #b71c1c;
+  text-decoration: underline;
+}
+
+.subscription-info,
+.account-info {
+  margin-top: 0.75rem;
+  text-align: center;
+}
+
+.account-type,
+.subscription-type {
+  font-size: 0.75rem;
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.subscription-level {
+  font-size: 0.75rem;
+  color: #4b5563;
+}
+
+/* Navigation */
+.sidebar-nav {
+  padding: 1rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  color: #4b5563;
+  border-radius: 0.5rem;
+  text-decoration: none;
+}
+
+.nav-item:hover {
+  background-color: #f9fafb;
+}
+
+.nav-item.active {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+
+.nav-divider {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.nav-category {
+  font-size: 0.75rem;
+  color: #6b7280;
+  padding: 0 1rem;
+  margin-bottom: 0.5rem;
+}

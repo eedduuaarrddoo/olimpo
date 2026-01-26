@@ -294,21 +294,27 @@
 }
 
 .search-form {
+  width: 100%;
+}
+
+.search-input-wrapper {
   display: flex;
   gap: 1rem;
+  align-items: stretch;
 }
 
 .search-input-container {
   flex: 1;
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .search-icon {
   position: absolute;
   left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
   color: #9ca3af;
+  pointer-events: none;
 }
 
 .search-input {
@@ -334,6 +340,9 @@
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 10px;
 }
 
 .search-button:hover {

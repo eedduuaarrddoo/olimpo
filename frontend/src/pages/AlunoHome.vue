@@ -1,78 +1,39 @@
 <template>
   <div class="flex min-h-screen">
-    
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="profile-image-container">
-          <i class="fas fa-user profile-icon"></i>
-          <span class="profile-badge">?</span>
-        </div>
-        <h3 class="profile-name">João Silva</h3>
-        <p class="profile-edit">editar perfil</p>
-        <router-link
-          to="/"
-          class="logout-link"
->
-      <i class="fas fa-sign-out-alt"></i>
-              Sair
-            </router-link>
+   
+    <Sidebar
+      :userName="aluno.nome"
+      badge="?"
+      accountType="ASSINATURA ILIMITADO"
+      :subscriptionLevel="aluno.nivel"
+      :menuItems="menuItems"
+      :otherOptions="otherOptions"
+      userType="aluno"
+      @edit-profile="editarPerfil"
+    />
 
-        <div class="subscription-info">
-          <p class="subscription-type">ASSINATURA ILIMITADO</p>
-          <p class="subscription-level">BÁSICO</p>
-        </div>
-      </div>
-
-      <nav class="sidebar-nav">
-        <a href="#" class="nav-item active">
-          <i class="fas fa-th-large"></i>
-          <span>Meu Painel</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="fas fa-clock"></i>
-          <span>Timeline</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="fas fa-book"></i>
-          <span>Minhas Inscrições</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="fas fa-trophy"></i>
-          <span>Meus Certificados</span>
-        </a>
-
-        <div class="nav-divider">
-          <p class="nav-category">OUTRAS OPÇÕES</p>
-          <a href="#" class="nav-item">
-            <i class="fas fa-chart-bar"></i>
-            <span>Minhas Estatísticas</span>
-          </a>
-        </div>
-      </nav>
-    </aside>
-
-    
+    <!-- Main Content -->
     <main class="main-content">
       <div class="content-wrapper">
-       
+        <!-- Header -->
         <div class="main-header">
           <h1 class="main-title">Meu Painel</h1>
-          <p class="main-subtitle">Olá, <strong>João Silva</strong>. Veja como está o seu desempenho hoje</p>
+          <p class="main-subtitle">Olá, <strong>{{ aluno.nome }}</strong>. Veja como está o seu desempenho hoje</p>
         </div>
 
-     
+        <!-- Welcome Banner -->
         <div class="welcome-banner">
           <h2 class="banner-title">Bem-vindo ao Sistema Olimpo!</h2>
           <p class="banner-text">Acompanhe suas inscrições, notas e certificados</p>
         </div>
 
-  
+        <!-- Stats Grid -->
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-content">
               <div>
                 <p class="stat-label">Total de Inscrições</p>
-                <p class="stat-value">4</p>
+                <p class="stat-value">{{ estatisticas.inscricoes }}</p>
               </div>
               <div class="stat-icon blue">
                 <i class="fas fa-clipboard-list"></i>
@@ -84,7 +45,7 @@
             <div class="stat-content">
               <div>
                 <p class="stat-label">Medalhas Conquistadas</p>
-                <p class="stat-value">2</p>
+                <p class="stat-value">{{ estatisticas.medalhas }}</p>
               </div>
               <div class="stat-icon yellow">
                 <i class="fas fa-medal"></i>
@@ -96,7 +57,7 @@
             <div class="stat-content">
               <div>
                 <p class="stat-label">Certificados Disponíveis</p>
-                <p class="stat-value">3</p>
+                <p class="stat-value">{{ estatisticas.certificados }}</p>
               </div>
               <div class="stat-icon green">
                 <i class="fas fa-certificate"></i>
@@ -105,7 +66,7 @@
           </div>
         </div>
 
-       
+        <!-- Events Container -->
         <div class="events-container">
           <div class="events-header">
             <h2 class="events-title">Minhas Modalidades</h2>
@@ -113,7 +74,7 @@
           </div>
 
           <div class="events-list">
-           
+            <!-- Event 1 -->
             <div class="event-item">
               <div class="event-content">
                 <div class="event-header">
@@ -139,7 +100,7 @@
                 </div>
 
                 <div class="event-actions">
-                  <button class="btn-primary">
+                  <button class="btn-primary" @click="baixarCertificado(1)">
                     <i class="fas fa-download"></i>
                     Baixar Certificado
                   </button>
@@ -151,7 +112,7 @@
               </div>
             </div>
 
-            
+            <!-- Event 2 -->
             <div class="event-item">
               <div class="event-content">
                 <div class="event-header">
@@ -174,7 +135,7 @@
                 </div>
 
                 <div class="event-actions">
-                  <button class="btn-primary">
+                  <button class="btn-primary" @click="baixarCertificado(2)">
                     <i class="fas fa-download"></i>
                     Baixar Certificado
                   </button>
@@ -186,7 +147,7 @@
               </div>
             </div>
 
-            
+            <!-- Event 3 -->
             <div class="event-item">
               <div class="event-content">
                 <div class="event-header">
@@ -212,7 +173,7 @@
                 </div>
 
                 <div class="event-actions">
-                  <button class="btn-primary">
+                  <button class="btn-primary" @click="baixarCertificado(3)">
                     <i class="fas fa-download"></i>
                     Baixar Certificado
                   </button>
@@ -224,7 +185,7 @@
               </div>
             </div>
 
-           
+            <!-- Event 4 -->
             <div class="event-item">
               <div class="event-content">
                 <div class="event-header">
@@ -266,11 +227,15 @@
 </template>
 
 <script>
+import Sidebar from '../components/Sidebar.vue';
+
 export default {
   name: 'AlunoHome',
+  components: {
+    Sidebar
+  },
   data() {
     return {
-      
       aluno: {
         nome: 'João Silva',
         assinatura: 'ILIMITADO',
@@ -280,22 +245,30 @@ export default {
         inscricoes: 4,
         medalhas: 2,
         certificados: 3
-      }
+      },
+      menuItems: [
+        { label: 'Meu Painel', icon: 'fas fa-th-large', path: '/aluno', active: true },
+        { label: 'Timeline', icon: 'fas fa-clock', path: '/aluno/timeline' },
+        { label: 'Minhas Inscrições', icon: 'fas fa-book', path: '/aluno/inscricoes' },
+        { label: 'Meus Certificados', icon: 'fas fa-trophy', path: '/aluno/certificados' }
+      ],
+      otherOptions: [
+        { label: 'Minhas Estatísticas', icon: 'fas fa-chart-bar', path: '/aluno/estatisticas' }
+      ]
     };
   },
   methods: {
-    
     editarPerfil() {
-   
+      console.log('Editando perfil');
     },
     baixarCertificado(id) {
-     
+      console.log('Baixando certificado:', id);
     }
   }
 };
 </script>
 
 <style scoped>
-/* Estilos específicos do componente */
 @import '../assets/AlunoHome.css';
+
 </style>
