@@ -134,7 +134,7 @@
 
 .main-header {
   margin-bottom: 2rem;
-  display: flex;
+  /*display: flex; */
   align-items: center;
   justify-content: space-between;
 }
@@ -540,4 +540,3 @@
   color: #b71c1c;
   text-decoration: underline;
 }
-

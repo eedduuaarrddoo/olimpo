@@ -1,3 +1,4 @@
+
 <template>
   <div class="flex min-h-screen">
     
@@ -10,7 +11,7 @@
         <h3 class="profile-name">Prof. Maria Santos</h3>
         <p class="profile-edit">editar perfil</p>
                 <router-link
-                    to="/aluno"
+                    to="/"
                     class="logout-link">
             <i class="fas fa-sign-out-alt"></i>
                             Sair

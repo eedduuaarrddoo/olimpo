@@ -10,7 +10,7 @@
         <h3 class="profile-name">João Silva</h3>
         <p class="profile-edit">editar perfil</p>
         <router-link
-          to="/professor"
+          to="/"
           class="logout-link"
 >
       <i class="fas fa-sign-out-alt"></i>
