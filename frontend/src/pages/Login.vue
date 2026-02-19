@@ -92,7 +92,7 @@ const form = reactive<LoginForm>({
 })
 
 const handleLogin = () => {
-  // aqui depois entra a API Laravel
+ 
   console.log('Login:', form)
 
   if (form.perfil === 'aluno') {
